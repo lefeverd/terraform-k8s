@@ -20,7 +20,7 @@ variable "workers_volume_size" {
 }
 
 variable "domain" {
-  default = "yourdomain.be"
+  default = ""
 }
 
 variable "subdomain" {

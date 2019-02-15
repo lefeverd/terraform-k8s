@@ -88,7 +88,8 @@ ovh setup init
 ```
 
 You can the specity `ovh_application_key` and `ovh_application_secret` in
-the variables file.
+the variables file.  
+You need to have an existing domain available, and specify it in the `domain` variable.
 
 #### Hetzner
 
