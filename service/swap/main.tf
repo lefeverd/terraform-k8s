@@ -10,7 +10,8 @@ resource "null_resource" "swap" {
   connection {
     host  = "${element(var.connections, count.index)}"
     user  = "root"
-    agent = true
+    agent = false
+    private_key = "${file("~/.ssh/id_rsa")}"
   }
 
   provisioner "remote-exec" {
@@ -37,6 +38,12 @@ resource "null_resource" "swap" {
   provisioner "remote-exec" {
     inline = [
       "systemctl daemon-reload",
+    ]
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=\"/GRUB_CMDLINE_LINUX_DEFAULT=\"cgroup_enable=memory swapaccount=1 /g' /etc/default/grub"
     ]
   }
 }

@@ -66,11 +66,18 @@ resource "hcloud_server" "host" {
 
   count = "${var.hosts}"
 
-  lifecycle {
-    prevent_destroy = true
-  }
+  #lifecycle {
+  #  prevent_destroy = true
+  #}
 
   provisioner "remote-exec" {
+    connection {
+      host  = "${hcloud_server.host.0.ipv4_address}"
+      user  = "root"
+      agent = false
+      private_key = "${file("~/.ssh/id_rsa")}"
+    }
+
     inline = [
       "while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done",
       "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'waiting for boot-finished'; sleep 5; done;",
@@ -96,7 +103,8 @@ resource "null_resource" "floating_ip_setup" {
   connection {
     host  = "${hcloud_server.host.0.ipv4_address}"
     user  = "root"
-    agent = true
+    agent = false
+    private_key = "${file("~/.ssh/id_rsa")}"
   }
 
   provisioner "file" {

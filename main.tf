@@ -83,6 +83,9 @@ module "dns" {
   lb_ip = "${module.provider_masters.floating_ip}"
 }
 
+/*
+These modules are installed with ansible.
+Use Terraform only for infra management.
 module "wireguard" {
   source = "./security/wireguard"
 
@@ -103,6 +106,8 @@ module "firewall" {
   vpn_port             = "${module.wireguard.vpn_port}"
   #kubernetes_interface = "${module.kubernetes.overlay_interface}"
 }
+*/
+
 /*
 module "etcd" {
   source = "github.com/hobby-kube/provisioning/service/etcd"
