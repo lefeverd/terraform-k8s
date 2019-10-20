@@ -67,5 +67,5 @@ variable "worker_hostname_format" {
 }
 
 variable "hcloud_image" {
-  default = "ubuntu-16.04"
+  default = "debian-10"
 }
