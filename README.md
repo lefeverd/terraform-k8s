@@ -6,12 +6,11 @@ If need be, we can use modules directly from the original GitHub repo (see [belo
 
 Modifications include:
 
-- Possibility to define different server types for master and worker nodes
+- Possibility to define different server types for master, worker and storage nodes
 - Added OVH dns provider.  
-- Added Wireguard rules in UFW setup.
 
-We don't use Terraform to create the Kubernetes cluster itself, only to prepare the nodes.  
-We then use `kubespray` (ansible based) to install or update the Kubernetes components.
+I don't use Terraform to create the Kubernetes cluster itself, only to prepare the nodes.  
+I then use Ansible to prepare the nodes and deploy the kubernetes cluster (`k3s`).
 
 <!-- TOC -->
 
@@ -31,7 +30,7 @@ We then use `kubespray` (ansible based) to install or update the Kubernetes comp
 ## Resources created
 
 By executing this plan, it will create Hetzner cloud resources, by default
-one master and two worker nodes.  
+one master node, two worker nodes and two storage nodes.  
 A DNS entry will be created for each node based on the hostname format defined.  
 Additionally, if `use_floating_ip_as_lb` is set to `true`, a floating IP address will be
 created at Hetzner, pointing to the master server.  
@@ -80,14 +79,14 @@ pointing to a file containing the values.
 #### OVH
 
 To use OVH as your DNS provider, install their cli, and launch the setup
-the created the needed credentials:
+to create the needed credentials:
 
 ```bash
 pip install ovhcli
 ovh setup init
 ```
 
-You can the specity `ovh_application_key` and `ovh_application_secret` in
+You can copy `ovh_application_key` and `ovh_application_secret` in
 the variables file.  
 You need to have an existing domain available, and specify it in the `domain` variable.
 
