@@ -29,11 +29,23 @@ module "provider_workers" {
   volume_size     = "${var.workers_volume_size}"
 }
 
+module "provider_storage_nodes" {
+  source = "./provider/hcloud"
+
+  token           = "${var.hcloud_token}"
+  ssh_keys        = "${var.hcloud_ssh_keys}"
+  location        = "${var.hcloud_location}"
+  type            = "${var.hcloud_storage_nodes_type}"
+  image           = "${var.hcloud_image}"
+  hosts           = "${var.storage_nodes_count}"
+  hostname_format = "${var.storage_nodes_hostname_format}"
+}
+
 locals {
-  total_count = "${var.masters_count + var.workers_count}"
-  public_ips = "${concat(module.provider_masters.public_ips, module.provider_workers.public_ips)}"
-  private_ips = "${concat(module.provider_masters.private_ips, module.provider_workers.private_ips)}"
-  hostnames = "${concat(module.provider_masters.hostnames, module.provider_workers.hostnames)}"
+  total_count = "${var.masters_count + var.workers_count + var.storage_nodes_count}"
+  public_ips = "${concat(module.provider_masters.public_ips, module.provider_workers.public_ips, module.provider_storage_nodes.public_ips)}"
+  private_ips = "${concat(module.provider_masters.private_ips, module.provider_workers.private_ips, module.provider_storage_nodes.private_ips)}"
+  hostnames = "${concat(module.provider_masters.hostnames, module.provider_workers.hostnames, module.provider_storage_nodes.hostnames)}"
   private_network_interface = "${module.provider_masters.private_network_interface}" # Masters and workers should have the same
 }
 

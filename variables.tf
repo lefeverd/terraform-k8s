@@ -19,6 +19,10 @@ variable "workers_volume_size" {
   default = 40
 }
 
+variable "storage_nodes_count" {
+  default = 2
+}
+
 variable "domain" {
   default = ""
 }
@@ -51,7 +55,7 @@ variable "hcloud_location" {
 }
 
 variable "hcloud_master_type" {
-  default = "cx11"
+  default = "cx21"
 }
 
 variable "master_hostname_format" {
@@ -64,6 +68,14 @@ variable "hcloud_worker_type" {
 
 variable "worker_hostname_format" {
   default = "kube-worker-%d"
+}
+
+variable "hcloud_storage_nodes_type" {
+  default = "cx11"
+}
+
+variable "storage_nodes_hostname_format" {
+  default = "kube-storage-%d"
 }
 
 variable "hcloud_image" {
