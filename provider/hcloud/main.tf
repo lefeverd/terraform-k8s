@@ -56,7 +56,6 @@ locals {
   floating_ip = "${ join(" ", hcloud_floating_ip.master.*.ip_address) }"
 }
 
-
 resource "hcloud_server" "host" {
   name        = "${format(var.hostname_format, count.index + 1)}"
   location    = "${var.location}"
@@ -92,9 +91,7 @@ resource "hcloud_volume" "volume" {
     count = "${var.hosts_with_volume}"
     name = "volume-${element(hcloud_server.host.*.name, count.index)}"
     size = "${var.volume_size}"
-    server_id = "${hcloud_server.host.id}"
     server_id = "${element(hcloud_server.host.*.id, count.index)}"
-    automount = true
 }
 
 resource "null_resource" "floating_ip_setup" {
@@ -140,14 +137,10 @@ output "public_ips" {
   value = ["${hcloud_server.host.*.ipv4_address}"]
 }
 
-output "private_ips" {
-  value = ["${hcloud_server.host.*.ipv4_address}"]
+output "private_network_interface" {
+  value = "ens10"
 }
 
 output "floating_ip" {
   value = "${local.floating_ip}"
-}
-
-output "private_network_interface" {
-  value = "eth0"
 }

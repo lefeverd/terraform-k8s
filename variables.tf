@@ -7,6 +7,10 @@ variable "use_floating_ip_as_lb" {
   default = true
 }
 
+variable "create_private_network" {
+  default = false
+}
+
 variable "workers_count" {
   default = 2
 }
@@ -21,6 +25,14 @@ variable "workers_volume_size" {
 
 variable "storage_nodes_count" {
   default = 2
+}
+
+variable "storage_nodes_with_volume" {
+  default = 2
+}
+
+variable "storage_nodes_volume_size" {
+  default = 40
 }
 
 variable "domain" {

@@ -4,7 +4,6 @@ terraform {
 
 module "provider_masters" {
   source = "./provider/hcloud"
-
   token           = "${var.hcloud_token}"
   ssh_keys        = "${var.hcloud_ssh_keys}"
   location        = "${var.hcloud_location}"
@@ -39,6 +38,8 @@ module "provider_storage_nodes" {
   image           = "${var.hcloud_image}"
   hosts           = "${var.storage_nodes_count}"
   hostname_format = "${var.storage_nodes_hostname_format}"
+  hosts_with_volume = "${min(var.storage_nodes_with_volume, var.storage_nodes_count)}"
+  volume_size     = "${var.storage_nodes_volume_size}"
 }
 
 locals {
@@ -46,7 +47,16 @@ locals {
   public_ips = "${concat(module.provider_masters.public_ips, module.provider_workers.public_ips, module.provider_storage_nodes.public_ips)}"
   private_ips = "${concat(module.provider_masters.private_ips, module.provider_workers.private_ips, module.provider_storage_nodes.private_ips)}"
   hostnames = "${concat(module.provider_masters.hostnames, module.provider_workers.hostnames, module.provider_storage_nodes.hostnames)}"
+  ids = "${concat(module.provider_masters.ids, module.provider_workers.ids, module.provider_storage_nodes.ids)}"
   private_network_interface = "${module.provider_masters.private_network_interface}" # Masters and workers should have the same
+}
+
+module "network" {
+  token = "${var.hcloud_token}"
+  source = "./network/hcloud"
+  count = "${local.total_count}"
+  ids = "${local.ids}"
+  ips = "${local.public_ips}"
 }
 
 # module "provider" {
@@ -73,12 +83,12 @@ locals {
 #   hostname_format = "${var.hostname_format}"
 # }
 
-module "swap" {
-  source = "./service/swap"
-
-  count       = "${local.total_count}"
-  connections = "${local.public_ips}"
-}
+#module "swap" {
+#  source = "./service/swap"
+#
+#  count       = "${local.total_count}"
+#  connections = "${local.public_ips}"
+#}
 
 module "dns" {
   source = "./dns/ovh"
